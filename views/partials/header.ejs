@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+  <meta charset="UTF-8">
+  <title><%= title || "Page" %> - NQHST</title>  <div class="headbar"></div>
+  <link rel="stylesheet" href="/css/cleanSS.css">
+  <script src="/js/popupS.js"></script>
+  <link rel="stylesheet" href="/css/popupS.css">
+  <% if (req.cookies.theme == "dark") { %>
+    <link rel="stylesheet" href="/css/cleanSS-dark.css">
+  <% } %>

@@ -1,0 +1,259 @@
+<html>
+
+
+<head>
+<%- include('../views/partials/header.ejs') %>
+</head>
+
+<style>
+::-webkit-scrollbar {
+    width:0px !important;
+}
+div.topright {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+div.top2right {
+  position: absolute;
+  top: 8px;
+  right: 175px;
+}
+
+div.center {
+  position: absolute;
+  top: 185px;
+  right: 150px;
+  left: 150px;
+  bottom: 75px;
+}
+
+div.topleft {
+  position: absolute;
+  top: 5px;
+  left: 8px;
+}
+
+div.underleft {
+  margin-top: 100px;
+}
+</style>
+
+
+<body>
+<div class="topright">
+  <a href="../" class="clean-button clean-button--red tooltip tooltip--left" data-tooltip="Return Home!">Back Home</a>
+  </div>
+
+
+<div class="topleft">
+  <h1 class="font-twitter">Student Dashboard</h1>
+  </div>
+
+  <div class="clean-grid clean-menu clean-menu--responsive underleft">
+      <input type="radio" id="menu-1" name="menu" checked>
+      <% for (var x = 0; x < courses.length; x++)  { %>
+        <input type="radio" id="menu-<%= x+2 %>" name="menu">
+        <% } %>
+        <input type="radio" id="class" name="menu">
+        <input type="radio" id="settings" name="menu">
+
+      <ul class="clean-menu-nav clean-unit-1-1 clean-unit-md-1-5">
+          <li><label for="menu-1">📈 Your Statistics</label></li>
+          <% for (var x = 0; x < courses.length; x++)  { %>
+            <li><label for="menu-<%= x+2 %>">⛳ <%= courses[x].name %></label></li>
+            <% } %>
+            <li><label for="class">👨‍🏫 Class Leaderboards</label></li>
+            <li><label for="settings">⚙️ Settings</label></li>
+      </ul>
+      <ul class="clean-menu-list clean-unit-1-1 clean-unit-md-4-5">
+          <li>
+            <h3>Welcome, <%= req.cookies.userData.username%>!</h3>
+            <p class="font-lightgrey"> Amount of runs completed </p>
+            <p class="font-green"><%= runs.length %></p>
+            <p class="font-lightgrey"> Your Current Average WPM</p>
+            <% if (result[0].wpm < 15) { %>
+              <p class="font-red">
+              <% } else if (result[0].wpm < 35) { %>
+                <p class="font-orange">
+                <% } else if (result[0].wpm < 65) { %>
+                  <p class="font-green">
+                    <% } else  { %>
+                      <p class="font-twitter">
+                      <% } %>
+                      <%= result[0].wpm %></p>
+                      <p class="font-lightgrey"> Your Current Accuracy</p>
+                      <% if (result[0].accuracy < 15) { %>
+                        <p class="font-red">
+                        <% } else if (result[0].accuracy < 35) { %>
+                          <p class="font-orange">
+                          <% } else if (result[0].accuracy < 65) { %>
+                            <p class="font-green">
+                              <% } else  { %>
+                                <p class="font-twitter">
+                                <% } %>
+                                <%= result[0].accuracy %> %</p>
+
+              <p class="font-lightgrey">Best Runs</p>
+              <table class="clean-table clean-table--hover">
+                                  <thead>
+                                      <tr><th>#</th>
+                                      <th>Course Name</th>
+                                      <th>WPM</th>
+                                  </tr></thead>
+                                  <tbody>
+                                    <% var total = 5;
+                                    if (runs.length < 5) {
+                                      total = runs.length;
+                                    }
+                                     %>
+                                    <% for (var x = 0; x < total; x++) { %>
+                                      <tr>
+                                          <td><%= x+1 %></td>
+                                          <td><%= runs[x].course %></td>
+                                          <td><%= runs[x].wpm %></td>
+                                      </tr>
+                                      <% } %>
+                                  </tbody>
+                              </table>
+                              <br>
+          </li>
+
+          <% for (var x = 0; x < courses.length; x++)  { %>
+            <li>
+              <h3>Course : <%= courses[x].name %></h3>
+              <p class="font-lightgrey">Description</p>
+              <p class="font-orange"><%= courses[x].desc %></p>
+              <p class="font-lightgrey">Words</p>
+              <p class="font-orange"><%= (parseInt(courses[x].words / 5)) %></p>
+              <p class="font-lightgrey">Accuracy</p>
+              <%
+              var totale = 0;
+              var avg = 0;
+              var dvd = 0;
+              for (var rn = 0; rn < runs.length; rn++) {
+                  if (runs[rn].course == courses[x].name) {
+                    totale += runs[rn].errors;
+                    dvd++;
+                  }
+              }
+              avg = parseInt(100 * ((courses[x].words * dvd) - totale) / (courses[x].words * dvd));
+               %>
+              <% if (avg < 15) { %>
+                <p class="font-red">
+                <% } else if (avg < 35) { %>
+                  <p class="font-orange">
+                  <% } else if (avg < 65) { %>
+                    <p class="font-green">
+                      <% } else  { %>
+                        <p class="font-twitter">
+                        <% } %>
+                        <%= avg %> %</p>
+              <a href="../board/<%= courses[x].classcode %>/<%= courses[x].name %>" class="clean-button  clean-button--green tooltip tooltip--right" data-tooltip="Start The Course!">Start Course</a><br><br>
+              <p class="font-lightgrey">Best Runs</p>
+              <table class="clean-table clean-table--hover">
+                                  <thead>
+                                      <tr><th>#</th>
+                                      <th>Time</th>
+                                      <th>WPM</th>
+                                      <th>Errors</th>
+                                  </tr></thead>
+                                  <tbody>
+                                     <% var z = 1; %>
+                                     <% var nodeCounter = 0; %>
+                                    <% for (var y = 0; y < runs.length; y++) { %>
+                                      <% if (nodeCounter < 5) { %>
+                                      <% if (runs[y].course == courses[x].name) { %>
+                                      <tr>
+                                          <td><%= z %></td>
+                                          <% z++; %>
+                                          <td><%= msToTime(runs[y].time) %></td>
+                                          <td><%= runs[y].wpm %></td>
+                                          <td><%= runs[y].errors %></td>
+                                      </tr>
+                                      <% nodeCounter++; %>
+                                      <% } %>
+                                        <% } %>
+                                      <% } %>
+                                  </tbody>
+                              </table>
+            </li>
+            <% } %>
+          <li>
+
+            <h1>Class Leaderboards</h1><br>
+            <p class="font-lightgrey">Fastest Typers</p>
+            <table class="clean-table clean-table--hover">
+                                <thead>
+                                    <tr><th>#</th>
+                                    <th>Name</th>
+                                    <th>WPM #</th>
+                                </tr></thead>
+                                <tbody>
+                                  <% for (var x = 0; x < wpmlist.length; x++) { %>
+                                    <% if (wpmlist[x].classcode == result[0].classcode) { %>
+                                    <tr>
+                                        <td><%= x+1 %></td>
+                                        <td><%= wpmlist[x].username %></td>
+                                        <td><%= wpmlist[x].wpm %></td>
+                                    </tr>
+                                      <% } %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <br>
+                            <p class="font-lightgrey">Most Accurate</p>
+                            <table class="clean-table clean-table--hover">
+                                                <thead>
+                                                    <tr><th>#</th>
+                                                    <th>Name</th>
+                                                    <th>ACC %</th>
+                                                </tr></thead>
+                                                <tbody>
+                                                  <% for (var x = 0; x < acclist.length; x++) { %>
+                                                    <% if (acclist[x].classcode == result[0].classcode) { %>
+                                                    <tr>
+                                                        <td><%= x+1 %></td>
+                                                        <td><%= acclist[x].username %></td>
+                                                        <td><%= acclist[x].accuracy %> %</td>
+                                                    </tr>
+                                                      <% } %>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                            <br>
+
+
+          </li>
+
+
+          <li>
+            <h3>Your Settings</h3><br>
+            <form class="clean-form">
+              <label for="curp">Change Password</label><br><br>
+            <input class="clean-input-1-3" id="curp" type="password" placeholder="Current Password"><br>
+            <input class="clean-input-1-3" type="password" placeholder="New Password"><br>
+            <input class="clean-input-1-3" type="password" placeholder="Confirm Password"><br>
+          </form>
+          <a class="clean-button clean-button--orange tooltip tooltip--right" data-tooltip="Dont forget to remember it!">Change Password</a><br><br>
+          <form class="clean-form">
+            <label for="cc">Change Class Code</label><br><br>
+          <input class="clean-input-1-3" id="cc" type="text" placeholder="New Class Code"><br>
+        </form>
+        <a class="clean-button clean-button--orange tooltip tooltip--right" data-tooltip="This Will Erase All Stats!!!">Change Code</a><br><br>
+        <br>
+        <a class="clean-button clean-button--red tooltip tooltip--right" data-tooltip="Exit this account" href="../logout">Logout</a><br><br>
+
+
+
+
+          </li>
+      </ul>
+  </div>
+
+
+</body>
+
+
+</html>

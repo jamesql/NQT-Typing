@@ -1,0 +1,202 @@
+<html>
+
+
+<head>
+<%- include('../views/partials/header.ejs') %>
+</head>
+
+<script>
+  function alertUser(char) {
+    popupS.alert({
+      content: char
+    });
+  }
+  </script>
+
+<style>
+::-webkit-scrollbar {
+    width:0px !important;
+}
+
+div.topright {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+div.top2right {
+  position: absolute;
+  top: 8px;
+  right: 175px;
+}
+
+div.center {
+  position: absolute;
+  top: 185px;
+  right: 150px;
+  left: 150px;
+  bottom: 75px;
+}
+
+div.topleft {
+  position: absolute;
+  top: 5px;
+  left: 8px;
+}
+
+div.underleft {
+  margin-top: 100px;
+}
+
+
+.key {
+    background-color:#ggg;
+    min-width:0px; display:inline-block;
+}
+
+.key-error {
+  background-color: red;
+}
+
+
+.key-correct {
+  background-color: green;
+}
+
+
+.key-current {
+  background-color: yellow;
+}
+
+</style>
+
+<div class="topright">
+  <a href="/sdash" class="clean-button clean-button--orange">Back To Dashboard</a>
+  </div>
+
+<% if (req.cookies.userData == null) { %>
+  <script> alertUser("Not Logged In!") </script>
+  <% res.redirect("/") %>
+<% } else {%>
+
+
+  <div class="topleft">
+    <h1 class="font-twitter"><%=cDetails[0].name%></h1>
+    </div>
+<div class="underleft">
+    <div class="clean-grid clean-menu clean-menu--responsive">
+        <input type="radio" id="stats" name="menu" checked>
+        <input type="radio" id="Challenge" name="menu">
+        <input type="radio" id="Other Courses" name="menu">
+
+        <ul class="clean-menu-nav clean-unit-1-1 clean-unit-md-1-5">
+            <li><label for="stats">Course Stats</label></li>
+            <li><label for="Challenge">Typing</label></li>
+            <li><label for="Other Courses">Other Courses</label></li>
+        </ul>
+        <ul class="clean-menu-list clean-unit-1-1 clean-unit-md-4-5">
+            <li>
+              <h3>Course Stats</h3>
+              <p class="font-lightgrey">Latest Runs</p>
+              <table class="clean-table clean-table--hover">
+                                  <thead>
+                                      <tr><th>#</th>
+                                      <th>WPM</th>
+                                      <th>Errors</th>
+                                  </tr></thead>
+                                  <tbody>
+                                    <% var total = 30;
+                                    if (runs.length < 30) {
+                                      total = runs.length;
+                                    }
+                                     %>
+                                    <% for (var x = 0; x < total; x++) { %>
+                                      <tr>
+                                          <td><%= x+1 %></td>
+                                          <td><%= runs[x].wpm %></td>
+                                          <td><%= runs[x].errors %></td>
+                                      </tr>
+                                      <% } %>
+                                  </tbody>
+                              </table>
+                              <br>
+            </li>
+
+            <li>
+              <h3>Typing Challenge</h3>
+              <h2 id="WPM" class="font-lightgrey" style="margin-left:400px;margin-top:50px;">WPM : 0</h2>
+              <h2 id="errors" class="font-lightgrey" style="margin-left:400px;margin-top:50px;">Errors : 0</h2>
+
+              <div id="text-kb" style="height:100px;width:750px;margin-left:150px;margin-top:100px;">
+                <span class="key" id="key0"><%= cDetails[0].content.charAt(0) %></span>
+                <% for (var x = 1; x < cDetails[0].content.length; x ++)  {%>
+                      <span class="key" id="key<%=x%>"><%= cDetails[0].content.charAt(x) %></span>
+                  <% } %>
+              </div>
+            </li>
+
+            <li>
+                <h3>Try These Next!</h3>
+            </li>
+        </ul>
+    </div>
+  </div>
+<script>
+var content = "<%=cDetails[0].content%>";
+
+var counter = 0;
+var enabled = false;
+var errors = 0;
+var startTime = 0;
+var endTime = 0;
+var uContent = "";
+
+window.onkeyup = function(e) {
+    var key = e.keyCode ? e.keyCode : e.which;
+
+    if (!enabled) {
+      startTime = Date.now();
+
+        enabled = true;
+    }
+
+    if (enabled) {
+
+      document.getElementById("key" + counter).classList.remove('key-current');
+            if (e.key == content.charAt(counter)) {
+          uContent += e.key;
+          document.getElementById("key" + counter).classList.add('key-correct');
+      }else {
+        if (e.keyCode == 20 || e.keyCode == 16 || e.keyCode == 13 || e.keyCode == 9) {
+
+        }else{
+        document.getElementById("key" + counter).classList.add('key-error');
+        uContent += e.key;
+        errors++;
+      }
+
+
+      }
+      if (uContent.length == content.length) {
+                endTime = Date.now();
+                var wpm = parseInt((((counter / 5) / (endTime-startTime))*1000) * 60)
+                window.location.replace("http://" + window.location.hostname + "/0110p/" + "<%=req.params.cname%>" + "/" + (endTime-startTime) + "/" + wpm + "/" + errors + "/" + "<%= req.params.cc %>" + "");
+      }
+      if (e.keyCode == 20 || e.keyCode == 16 || e.keyCode == 13 || e.keyCode == 9) {
+
+      }else {
+      document.getElementById("key" + (counter+1)).classList.add('key-current');
+      document.getElementById("errors").innerHTML = "Errors : " + errors;
+      counter++;
+      var timer = Date.now() - startTime;
+      var wpm = parseInt((((counter / 5) / timer)*1000) * 60)
+      document.getElementById("WPM").innerHTML = "WPM : " + wpm;
+
+
+          }
+    }
+}
+
+</script>
+  <% } %>
+</html>

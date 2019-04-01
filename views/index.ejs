@@ -1,0 +1,140 @@
+<html>
+
+
+<head>
+<%- include('../views/partials/header.ejs') %>
+</head>
+
+<style>
+::-webkit-scrollbar {
+    width:0px !important;
+}
+
+div.topright {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+div.top2right {
+  position: absolute;
+  top: 8px;
+  right: 175px;
+}
+
+div.center {
+  position: absolute;
+  top: 95px;
+  right: 150px;
+  left: 150px;
+  bottom: 75px;
+}
+
+div.bottomright {
+  position: absolute;
+  right: 25;
+  bottom: 15;
+}
+
+div.topleft {
+  position: absolute;
+  top: 5px;
+  left: 16px;
+}
+
+</style>
+
+<% if (req.cookies.userData == null) { %>
+  <div class="top2right">
+  <a href="/login" class="clean-button clean-button--s clean-button--primary clean-button--green tooltip tooltip--bottom" data-tooltip="Continue your progress!">Login</a>
+  </div>
+  <div class="topright">
+  <a href="/register" class="clean-button clean-button--s clean-button--primary clean-button--orange tooltip tooltip--bottom" data-tooltip="Get Started!">Create Account</a>
+  </div>
+  <% } else {%>
+    <style>
+    div.top2right {
+      position: absolute;
+      top: 8px;
+      right: 120px;
+    }
+    </style>
+    <div class="topright">
+    <a href="/logout" class="clean-button clean-button--s clean-button--primary clean-button--red tooltip tooltip--bottom" data-tooltip="Logout">Logout</a>
+    </div>
+    <div class="top2right">
+      <% var admin = false; %>
+      <% for (var x = 0; x < classes.length; x++) {
+          if (classes[x].owner == req.cookies.userData.username) {
+            admin = true;
+          }
+      }%>
+
+      <% if (admin == false) { %>
+    <a href="/sdash" class="clean-button clean-button--s clean-button--primary clean-button--orange tooltip tooltip--bottom" data-tooltip="Get Crackin!">Dashboard</a>
+    <% } else { %>
+      <a href="/tdash" class="clean-button clean-button--s clean-button--primary clean-button--orange tooltip tooltip--bottom" data-tooltip="Get Started!">Dashboard</a>
+      <% } %>
+    </div>
+    <% } %>
+
+    <div class="topleft">
+      <h1 class="font-twitter">NQT</h1>
+    </div>
+
+
+<div class="center">
+  <h2>Top Typers</h2>
+  <table class="clean-table clean-table--hover">
+                      <thead>
+                          <tr><th>#</th>
+                          <th>Name</th>
+                          <th>WPM</th>
+                      </tr></thead>
+                      <tbody>
+                                                <% for (var x = 0; x < 5; x++) { %>
+                          <tr>
+                              <td><%= x+1 %></td>
+                              <td><%= result[x].username %></td>
+                              <td><%= result[x].wpm %></td>
+                          </tr>
+                          <% } %>
+                      </tbody>
+                  </table>
+                  <br>
+                  <h2>Top Classes</h2>
+                  <table class="clean-table clean-table--hover">
+                                      <thead>
+                                          <tr><th>#</th>
+                                          <th>Class Name</th>
+                                          <th>MT5</th>
+                                      </tr></thead>
+                                      <tbody>
+                                        <% var total = 5;
+                                        if (classes.length < 5) {
+                                          total = classes.length;
+                                        }
+                                         %>
+                                        <% for (var x = 0; x < total; x++) { %>
+                                          <tr>
+                                              <td><%= x+1 %></td>
+                                              <td><%= classes[x].name %></td>
+                                              <td><%= classes[x].runs %></td>
+                                          </tr>
+                                          <% } %>
+                                      </tbody>
+                                  </table>
+
+</div>
+<div class="bottomright">
+  <% if (req.cookies.theme == "dark") { %>
+  <a class="clean-button clean-button--primary clean-button--pill tooltip tooltip--top" data-tooltip="Original Looks!" href="/setlightmode">Light Mode</a>
+  <% } else { %>
+    <a class="clean-button clean-button--primary clean-button--pill tooltip tooltip--top" data-tooltip="New Dark Mode!" href="/setdarkmode">Dark Mode</a>
+    <% } %>
+</div>
+
+
+
+
+</html>

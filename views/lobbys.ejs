@@ -1,0 +1,240 @@
+<html>
+<head>
+<%- include('../views/partials/header.ejs') %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+  <style>
+  ::-webkit-scrollbar {
+      width:0px !important;
+  }
+
+  .spacing {
+    margin-top: 10px;
+    margin-left: 90px;
+    margin-right: 90px;
+  }
+
+  div.topright {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+  }
+
+  div.top2right {
+    position: absolute;
+    top: 8px;
+    right: 155px;
+  }
+
+  div.underright {
+    margin-top:16px;
+    margin-left: 90px;
+    margin-right: 155px;
+  }
+
+  div.center {
+    position: absolute;
+    top: 185px;
+    right: 150px;
+    left: 150px;
+    bottom: 75px;
+  }
+
+  div.topleft {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+  }
+
+  div.underleft {
+    margin-top:130px;
+    margin-left: 90px;
+    margin-right: 90px;
+  }
+
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+    border-radius: 125px;
+  }
+
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
+  @keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+  }
+
+  </style>
+
+
+<body>
+
+  <div class="topright">
+    <a href="../" class="clean-button clean-button--red tooltip tooltip--left" data-tooltip="Return Home!">Back Home</a>
+    </div>
+
+    <div class="top2right">
+      <a href="#" id="myBtn" class="clean-button clean-button--orange tooltip tooltip--left" data-tooltip="Create Your Own Lobby!">Create Lobby</a>
+      </div>
+
+  <div class="topleft">
+    <h1 class="font-twitter">Lobby List</h1>
+  </div>
+
+  <div class="underleft">
+    <a class="clean-button clean-button--green" href="../lobbys">Refresh</a>
+    </div>
+
+<div class="underright">
+    <form class="clean-form">
+        <input id="searchbox" type="text" class="clean-input--rounded" placeholder="Search for Lobbys">
+        <button onClick="search" type="submit" class="clean-button clean-button--primary">Search</button>
+    </form>
+  </div>
+
+
+  <div class="spacing">
+  <table class="clean-table clean-table--hover">
+                      <thead>
+                          <tr><th>#</th>
+                          <th>Lobby Name</th>
+                          <th>Leader</th>
+                          <th>Slots</th>
+                          <th></th>
+                      </tr></thead>
+                      <tbody>
+                        <% for (var x = 0; x < lobbys.length; x++) { %>
+                          <tr>
+                              <td><%= x+1 %></td>
+                              <td><%= lobbys[x].name %></td>
+                              <td><%= lobbys[x].player1 %></td>
+
+                              <%
+                              var slotsTaken = 1;
+                              if (lobbys[x].player2 != "!EMPTY!") { slotsTaken ++; }
+                              if (lobbys[x].player3 != "!EMPTY!") { slotsTaken ++; }
+                              if (lobbys[x].player4 != "!EMPTY!") { slotsTaken ++; }
+                              if (lobbys[x].player5 != "!EMPTY!") { slotsTaken ++; }
+
+                              %>
+                              <td><%= slotsTaken %>/5</td>
+                              <td>
+                              <% if (slotsTaken < 5) { %>
+                                <a class="clean-button clean-button--s clean-button--primary clean-button--green tooltip tooltip--right" data-tooltip="Join This Lobby!" href="../joinlobby/<%= lobbys[x].lobbyid %>" >Join</a>
+                              <% } else { %>
+                                <button class="clean-button clean-button--s clean-button--primary clean-button--red tooltip tooltip--right" data-tooltip="This Lobby Is Full!" disabled>Join</button>
+                                <% } %>
+                                </td>
+                          </tr>
+                          <% } %>
+                      </tbody>
+                  </table>
+</div>
+
+
+<div id="myModal" class="modal">
+
+  <div class="modal-content">
+    <form class="clean-form">
+
+    <span class="close">&times;</span>
+      <label for="lobbynametext">Lobby Name</label><br><br>
+    <input class="clean-input-1-1" id="lobbynametext" type="text" placeholder="Enter Lobby Name"><br><br>
+
+      <label for="lobbycontenttext">Lobby Content</label><br><br>
+    <input class="clean-input-1-1" id="lobbycontenttext" type="text" placeholder="Enter Lobby Content"><br><br>
+</form>
+      <button onClick="createLobby()" id="submitRace" class="clean-button clean-button--s clean-button--primary clean-button--green tooltip tooltip--right" data-tooltip="Start Your Lobby!">Create Lobby</button>
+
+  </div>
+
+</div>
+
+
+
+<script>
+var modal = document.getElementById('myModal');
+
+var btn = document.getElementById("myBtn");
+
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+<script>
+  function createLobby() {
+    var lobbyname = document.getElementById("lobbynametext").value;
+    var lobbycontent = document.getElementById("lobbycontenttext").value;
+    if (lobbyname == "" || lobbycontent == "") {
+      popupS.alert({
+        content: 'Missing Required Forms!'
+      });
+    }else{
+      window.location.replace("http://" + window.location.hostname + "/createlobby/" + lobbyname + "/" + lobbycontent);
+    }
+  }
+
+  function joinLobby() {
+
+  }
+
+  function search() {
+    var sTerm = document.getElementById("searchbox").value;
+    window.location.replace("http://" + window.location.hostname + "/lobbys/s/" + sTerm);
+    console.log(window.location.hostname);
+  }
+
+  </script>
+
+  </body>
+
+</html>
