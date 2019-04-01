@@ -8,7 +8,7 @@ const settings = require('./settings.json');
 const con = require('./functions/sql');
 const hash = require('./lib/hash');
 
-const alg = "JGHSD7Gjhs**ug7JGHSD7Gjhsfjhd7fG7G7gshajhys8a6jh872786&^&^YFGSTYFhvHSDYASGHDYSBDYUSAGDYHASGHDHASGDJHASGDHJGASHJDGASJHDGASHJGDJAHSGD7665as67d567s5d76a5d76sa5d6asgdhusadhfasdtfas**";
+const alg = "///";
 
 const app = express();
 const http = require('http');
