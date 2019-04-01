@@ -32,10 +32,6 @@ app.use(logger('dev'))
 console.log("[NQT-Service] Typing Service Online!")
 console.log("[NQT-Service] Typeracer Service Online!")
 
-app.get('/getinfo', (req,res)=>{
-  res.send(req.cookies.userData);
-})
-
 app.get('/logout', (req,res)=>{
   res.clearCookie('userData')
   res.redirect('/')
