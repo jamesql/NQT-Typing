@@ -1,6 +1,12 @@
 # NQT Typing Serivce
 - This is a open-source learning to type site similar to edutyping. This site also includes a type racing site
 
+# Features
+- Create Class's and add students 
+- Create custom courses
+- Record and view all students statistics
+- Play in TypeRacing contests
+
 # Setup
 - Download source code
 - Edit functions/sql.js to enter your sql details
@@ -21,4 +27,5 @@
 - Play in TypeRacer contests via lobbys page
 
 # Dependencies
-- `npm i express`
+- `package.json`
+- Just do `sudo npm i` !
