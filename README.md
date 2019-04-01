@@ -6,6 +6,7 @@
 - Create custom courses
 - Record and view all students statistics
 - Play in TypeRacing contests
+- Comes with pre-built Dark & Light mode!
 
 # Setup
 - Download source code
