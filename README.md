@@ -1,4 +1,4 @@
-# NQT Typing Serivce
+# NQT Typing Service
 - This is a open-source learning to type site similar to edutyping. This site also includes a type racing site
 
 # Features
